@@ -1,0 +1,8 @@
+{
+    "sessionSecret": "your-secret-key",
+    "mongodbUri": "mongodb://localhost:27017/plaxynova",
+    "paypal": {
+        "clientId": "your-paypal-client-id",
+        "clientSecret": "your-paypal-client-secret"
+    }
+}

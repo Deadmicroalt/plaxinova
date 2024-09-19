@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server - Plaxynova Hosting</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #ddd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #1f1f1f;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        button {
+            background-color: #ff4d4d;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            width: 100%;
+            margin: 5px 0;
+        }
+        button:hover {
+            background-color: #ff6666;
+        }
+        .console {
+            background-color: #2c2c2c;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 id="server-name">Server Name</h2>
+        <div class="console" id="console-logs"></div>
+        <button id="start-button">Start</button>
+        <button id="stop-button">Stop</button>
+        <button id="restart-button">Restart</button>
+    </div>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const serverId = urlParams.get('id');
+
+        async function fetchServer() {
+            const response = await fetch(`/servers/${serverId}`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            const server = await response.json();
+            document.getElementById('server-name').innerText = server.name;
+
+            const consoleLogs = document.getElementById('console-logs');
+            server.consoleLogs.forEach(log => {
+                const logElement = document.createElement('div');
+                logElement.innerText = log;
+                consoleLogs.appendChild(logElement);
+            });
+        }
+
+        document.getElementById('start-button').addEventListener('click', async () => {
+            await fetch(`/servers/${serverId}/start`, { method: 'POST' });
+        });
+
+        document.getElementById('stop-button').addEventListener('click', async () => {
+            await fetch(`/servers/${serverId}/stop`, { method: 'POST' });
+        });
+
+        document.getElementById('restart-button').addEventListener('click', async () => {
+            await fetch(`/servers/${serverId}/restart`, { method: 'POST' });
+        });
+
+        fetchServer();
+    </script>
+</body>
+</html>

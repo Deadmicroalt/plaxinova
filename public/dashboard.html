@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Plaxynova Hosting</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #ddd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #1f1f1f;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        .server {
+            background-color: #2c2c2c;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Dashboard</h2>
+        <div id="servers"></div>
+    </div>
+    <script>
+        async function fetchServers() {
+            const response = await fetch('/servers', {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            const result = await response.json();
+            const serversContainer = document.getElementById('servers');
+
+            result.servers.forEach(server => {
+                const serverElement = document.createElement('div');
+                serverElement.className = 'server';
+                serverElement.innerHTML = `
+                    <h3>${server.name}</h3>
+                    <p>Memory: ${server.memory} MB</p>
+                    <p>RAM: ${server.ram} MB</p>
+                    <a href="server.html?id=${server._id}">Manage Server</a>
+                `;
+                serversContainer.appendChild(serverElement);
+            });
+        }
+
+        fetchServers();
+    </script>
+</body>
+</html>
