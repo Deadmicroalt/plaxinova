@@ -1,73 +1,135 @@
-[![Logo Image](https://cdn.pterodactyl.io/logos/new/pterodactyl_logo.png)](https://pterodactyl.io)
+# Nook Theme
+NookTheme is a free and open source [Pterodactyl theme](https://pterodactyl.io) designed to be simple, clean, and modern.
 
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/pterodactyl/panel/ci.yaml?label=Tests&style=for-the-badge&branch=1.0-develop)
-![Discord](https://img.shields.io/discord/122900397965705216?label=Discord&logo=Discord&logoColor=white&style=for-the-badge)
-![GitHub Releases](https://img.shields.io/github/downloads/pterodactyl/panel/latest/total?style=for-the-badge)
-![GitHub contributors](https://img.shields.io/github/contributors/pterodactyl/panel?style=for-the-badge)
+![Image](https://i.imgur.com/AFjHGBr.png)
 
-# Pterodactyl Panel
+<details>
+<summary>View Screnshots</summary>
 
-Pterodactyl® is a free, open-source game server management panel built with PHP, React, and Go. Designed with security
-in mind, Pterodactyl runs all game servers in isolated Docker containers while exposing a beautiful and intuitive
-UI to end users.
+![Image](https://i.imgur.com/CNxF3iT.png)
+![Image](https://i.imgur.com/IflRtEX.png)
+![Image](https://i.imgur.com/vNLK5jP.png)
+![Image](https://i.imgur.com/dnxV2CS.png)
+</details>
 
-Stop settling for less. Make game servers a first class citizen on your platform.
+## Installation
 
-![Image](https://cdn.pterodactyl.io/site-assets/pterodactyl_v1_demo.gif)
+This will update your panel to the latest version of NookTheme panel is based. <br>
+You can see the version in the current branch name.
+### Enter Maintenance Mode
+
+Whenever you are performing an update you should be sure to place your Panel into maintenance mode. This will prevent
+users from encountering unexpected errors and ensure everything can be updated before users encounter
+potentially new features.
+
+```bash
+cd /var/www/pterodactyl
+
+php artisan down
+```
+
+### Download the theme
+
+The first step in the update process is to download the new panel files from GitHub. The command below will download
+the release archive for the most recent version of Pterodactyl, save it in the current directory and will automatically
+unpack the archive into your current folder.
+
+```bash
+curl -L https://github.com/Nookure/NookTheme/releases/latest/download/panel.tar.gz | tar -xzv
+```
+
+Once all of the files are downloaded we need to set the correct permissions on the cache and storage directories to avoid
+any webserver related errors.
+
+```bash
+chmod -R 755 storage/* bootstrap/cache
+```
+
+### Update Dependencies
+
+After you've downloaded all of the new files you will need to upgrade the core components of the panel. To do this,
+simply run the commands below and follow any prompts.
+
+```bash
+composer install --no-dev --optimize-autoloader
+```
+
+### Clear Compiled Template Cache
+
+You'll also want to clear the compiled template cache to ensure that new and modified templates show up correctly for
+users.
+
+```bash
+php artisan view:clear
+php artisan config:clear
+```
+
+### Database Updates
+
+You'll also need to update your database schema for the newest version of Pterodactyl. Running the command below
+will update the schema and ensure the default eggs we ship are up to date (and add any new ones we might have). Just
+remember, _never edit core eggs we ship_! They will be overwritten by this update process.
+
+```bash
+php artisan migrate --seed --force
+```
+
+### Set Permissions
+
+The last step is to set the proper owner of the files to be the user that runs your webserver. In most cases this
+is `www-data` but can vary from system to system &mdash; sometimes being `nginx`, `caddy`, `apache`, or even `nobody`.
+
+```bash
+# If using NGINX or Apache (not on CentOS):
+chown -R www-data:www-data /var/www/pterodactyl/*
+
+# If using NGINX on CentOS:
+chown -R nginx:nginx /var/www/pterodactyl/*
+
+# If using Apache on CentOS
+chown -R apache:apache /var/www/pterodactyl/*
+```
+
+### Restarting Queue Workers
+
+After _every_ update you should restart the queue worker to ensure that the new code is loaded in and used.
+
+```bash
+php artisan queue:restart
+```
+
+### Exit Maintenance Mode
+
+Now that everything has been updated you need to exit maintenance mode so that the Panel can resume accepting
+connections.
+
+```bash
+php artisan up
+```
 
 ## Documentation
 
 * [Panel Documentation](https://pterodactyl.io/panel/1.0/getting_started.html)
 * [Wings Documentation](https://pterodactyl.io/wings/1.0/installing.html)
 * [Community Guides](https://pterodactyl.io/community/about.html)
-* Or, get additional help [via Discord](https://discord.gg/pterodactyl)
+* Or, get additional help [via Discord](https://discord.nookure.com/)
 
-## Sponsors
+## Star History
 
-I would like to extend my sincere thanks to the following sponsors for helping fund Pterodactyl's development.
-[Interested in becoming a sponsor?](https://github.com/sponsors/matthewpi)
-
-| Company                                                                           | About                                                                                                                                                                                                                                           |
-|-----------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [**Aussie Server Hosts**](https://aussieserverhosts.com/)                         | No frills Australian Owned and operated High Performance Server hosting for some of the most demanding games serving Australia and New Zealand.                                                                                                                       |
-| [**CodeNode LLC**](https://codenode.gg/)                                          | Looking for simplicity? Well, look no further! CodeNode has got you covered with everything you need at the rock-bottom price of $1.75 per GB, including dedicated IPs in Dallas, Texas, and Amsterdam, Netherlands. We're not just good, we're the best in the game! |
-| [**BisectHosting**](https://www.bisecthosting.com/)                               | BisectHosting provides Minecraft, Valheim and other server hosting services with the highest reliability and lightning fast support since 2012.                                                                                                                       |
-| [**MineStrator**](https://minestrator.com/)                                       | Looking for the most highend French hosting company for your minecraft server? More than 24,000 members on our discord trust us. Give us a try!                                                                                                                       |
-| [**HostEZ**](https://hostez.io)                                                   | US & EU Rust & Minecraft Hosting. DDoS Protected bare metal, VPS and colocation with low latency, high uptime and maximum availability. EZ!                                                                                                                           |
-| [**Blueprint**](https://blueprint.zip/?utm_source=pterodactyl&utm_medium=sponsor) | Create and install Pterodactyl addons and themes with the growing Blueprint framework - the package-manager for Pterodactyl. Use multiple modifications at once without worrying about conflicts and make use of the large extension ecosystem.                       |
-| [**indifferent broccoli**](https://indifferentbroccoli.com/)                      | indifferent broccoli is a game server hosting and rental company. With us, you get top-notch computer power for your gaming sessions. We destroy lag, latency, and complexity--letting you focus on the fun stuff.                                                    |
-
-### Supported Games
-
-Pterodactyl supports a wide variety of games by utilizing Docker containers to isolate each instance. This gives
-you the power to run game servers without bloating machines with a host of additional dependencies.
-
-Some of our core supported games include:
-
-* Minecraft — including Paper, Sponge, Bungeecord, Waterfall, and more
-* Rust
-* Terraria
-* Teamspeak
-* Mumble
-* Team Fortress 2
-* Counter Strike: Global Offensive
-* Garry's Mod
-* ARK: Survival Evolved
-
-In addition to our standard nest of supported games, our community is constantly pushing the limits of this software
-and there are plenty more games available provided by the community. Some of these games include:
-
-* Factorio
-* San Andreas: MP
-* Pocketmine MP
-* Squad
-* Xonotic
-* Starmade
-* Discord ATLBot, and most other Node.js/Python discord bots
-* [and many more...](https://github.com/parkervcp/eggs)
+<a href="https://star-history.com/#Nookure/NookTheme&Timeline">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Nookure/NookTheme&type=Timeline&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=Nookure/NookTheme&type=Timeline" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=Nookure/NookTheme&type=Timeline" />
+  </picture>
+</a>
 
 ## License
 
-Pterodactyl® Copyright © 2015 - 2022 Dane Everitt and contributors.
+Pterodactyl® Copyright © 2015 - 2023 Dane Everitt and contributors.
 
-Code released under the [MIT License](./LICENSE.md).
+> Nookure is not affiliated with Pterodactyl® Panel or its contributors.
+
+Pterodactyl code released under the [MIT License](./LICENSE.md).
+
+NookTheme code  edits released under the [GNU GPLv3 License](./NookLicense.md).

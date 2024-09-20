@@ -5,6 +5,7 @@ on:
     branches:
       - develop
       - 1.0-develop
+      - release/v1.11.5
   pull_request:
     branches:
       - develop
@@ -26,7 +27,7 @@ jobs:
         id: docker_meta
         uses: docker/metadata-action@v4
         with:
-          images: ghcr.io/pterodactyl/panel
+          images: ghcr.io/nookure/nooktheme
           flavor: |
             latest=false
           tags: |

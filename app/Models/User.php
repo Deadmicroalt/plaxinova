@@ -216,7 +216,7 @@ class User extends Model implements
     }
 
     /**
-     * Return a concatenated result for the accounts full name.
+     * Return a concatenated result for the account's full name.
      */
     public function getNameAttribute(): string
     {
@@ -269,5 +269,22 @@ class User extends Model implements
                 $builder->where('servers.owner_id', $this->id)->orWhere('subusers.user_id', $this->id);
             })
             ->groupBy('servers.id');
+    }
+
+    /**
+     * Create an admin account if it doesn't already exist.
+     */
+    public static function createAdminAccount()
+    {
+        if (!self::where('username', 'admin')->exists()) {
+            $admin = new self();
+            $admin->username = 'admin';
+            $admin->email = 'admin@example.com'; // Change to desired email
+            $admin->password = bcrypt('1234'); // Password is '1234'
+            $admin->root_admin = true; // Grant admin privileges
+            $admin->name_first = 'Admin';
+            $admin->name_last = 'User'; // Change as needed
+            $admin->save();
+        }
     }
 }

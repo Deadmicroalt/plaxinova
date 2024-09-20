@@ -4,7 +4,7 @@ return [
     /*
      * Enable or disable captchas
      */
-    'enabled' => env('RECAPTCHA_ENABLED', true),
+    'enabled' => env('RECAPTCHA_ENABLED', false),
 
     /*
      * API endpoint for recaptcha checks. You should not edit this.
@@ -27,5 +27,5 @@ return [
      * Domain verification is enabled by default and compares the domain used when solving the captcha
      * as public keys can't have domain verification on google's side enabled (obviously).
      */
-    'verify_domain' => true,
+    'verify_domain' => false
 ];
